@@ -1,0 +1,164 @@
+---
+- name: Set up CI/CD VM with Jenkins, kubectl, Helm,Node Exporter, and AWS CLI
+  hosts: all
+  become: true
+  vars:  
+    jenkins_port: 8080
+    kubectl_version: "1.29.0"   
+    aws_cli_version: "2.13.27" 
+
+  tasks:
+    - name: Update apt package index
+      apt:
+        update_cache: yes
+
+    # Install common dependencies
+    - name: Install required system packages
+      apt:
+        name:
+          - curl
+          - wget
+          - git
+          - unzip
+          - gnupg
+          - software-properties-common
+          - openjdk-17-jdk  
+        state: present
+
+    # Install Jenkins
+    - name: Add Jenkins repository key
+      apt_key:
+        url: "https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key"
+        state: present
+
+    - name: Add Jenkins repository
+      apt_repository:
+        repo: "deb https://pkg.jenkins.io/debian-stable binary/"
+        state: present
+        filename: "jenkins"
+
+    - name: Install Jenkins
+      apt:
+        name: "jenkins"
+        update_cache: yes
+        state: present
+
+    - name: Ensure Jenkins is running and enabled
+      service:
+        name: jenkins
+        state: started
+        enabled: yes
+  # Install Docker
+    - name: Add Docker GPG key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker repository
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+        state: present
+
+    - name: Install Docker
+      apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+        state: present
+        update_cache: true
+
+    - name: Ensure Docker is running and enabled
+      service:
+        name: docker
+        state: started
+        enabled: yes
+    - name: Check if Docker group exists
+      group:
+        name: docker
+        state: present
+
+    - name: Add Jenkins user to Docker group
+      user:
+        name: jenkins
+        groups: docker
+        append: yes
+        state: present
+    - name: Restart Jenkins to apply Docker group membership
+      service:
+        name: jenkins
+        state: restarted
+
+    # Install kubectl
+    - name: Download kubectl binary
+      get_url:
+        url: "https://storage.googleapis.com/kubernetes-release/release/v{{ kubectl_version }}/bin/linux/amd64/kubectl"
+        dest: "/usr/local/bin/kubectl"
+        mode: "0755"
+        validate_certs: no
+
+
+    # Install AWS CLI v2
+    - name: Download AWS CLI v2
+      get_url:
+        url: "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-{{ aws_cli_version }}.zip"
+        dest: "/tmp/awscliv2.zip"
+
+    - name: Unzip AWS CLI
+      unarchive:
+        src: "/tmp/awscliv2.zip"
+        dest: "/tmp"
+        remote_src: yes
+
+    - name: Install AWS CLI
+      command: /tmp/aws/install
+      args:
+        creates: /usr/local/bin/aws
+
+    - name: Clean up AWS CLI installation files
+      file:
+        path: "/tmp/awscliv2.zip"
+        state: absent
+      ignore_errors: true
+    # install helm 
+    - name: Download Helm install script
+      get_url:
+        url: https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+        dest: /tmp/get_helm.sh
+        mode: '0755'
+
+    - name: Run Helm install script
+      command: /tmp/get_helm.sh
+
+    - name: Verify Helm installation
+      command: helm version
+      register: helm_output
+    # install Node Exporter
+    - name: Download Node Exporter
+      shell: |
+        cd /tmp
+        curl -LO https://github.com/prometheus/node_exporter/releases/download/v1.8.0/node_exporter-1.8.0.linux-amd64.tar.gz
+        tar -xzf node_exporter-1.8.0.linux-amd64.tar.gz
+        cp node_exporter-1.8.0.linux-amd64/node_exporter /usr/local/bin/
+      args:
+        creates: /usr/local/bin/node_exporter
+
+    - name: Create systemd service
+      copy:
+        dest: /etc/systemd/system/node_exporter.service
+        content: |
+          [Unit]
+          Description=Node Exporter
+          After=network.target
+
+          [Service]
+          ExecStart=/usr/local/bin/node_exporter
+
+          [Install]
+          WantedBy=default.target
+
+    - name: Start and enable Node Exporter
+      systemd:
+        name: node_exporter
+        enabled: yes
+        state: started

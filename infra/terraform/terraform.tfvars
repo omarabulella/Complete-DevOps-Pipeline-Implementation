@@ -1,0 +1,8 @@
+region="us-east-2"
+ec2_instance_type="t2.micro"
+Eks_cluster_name="my-eks-cluster"
+vpc_cidr="10.0.0.0/16"
+ssh_key_name = "my-ssh-key"
+ssh_key_path = "~/.ssh/my-key.pem"
+s3_bucket_name = "my-terraform-state-bucket-konecta"
+ami_id = "ami-04f167a56786e4b09"
