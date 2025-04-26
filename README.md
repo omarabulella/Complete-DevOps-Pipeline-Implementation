@@ -105,6 +105,8 @@ Once you’ve SSH'd into the EC2 instance and ensured Jenkins is installed, foll
 ### 1. Install Required Jenkins Plugins:
 * Multibranch Scan Webhook Trigger
 ### 2. Add Required  Credentials to Jenkins: Store the following credentials in Jenkins:
+* AWS Access key:
+* AWS secret access key:
 * REGION: 
 * cluster-name: 
 * image-name: 
