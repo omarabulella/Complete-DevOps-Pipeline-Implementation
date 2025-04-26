@@ -4,17 +4,17 @@ span.counter {
 
 span.highlight {
   background-color: #3f51b5;
-  color: white;
+  color: red;
   padding: 3px;
   border-radius: 2px;
 }
 
 span.highlight#DEV {
   background-color: #4caf50;
-  color: white;
+  color: red;
 }
 
 span.highlight#PROD {
   background-color: #f44336;
-  color: white;
+  color: red;
 }
