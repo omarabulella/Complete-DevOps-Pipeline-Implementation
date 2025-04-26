@@ -145,7 +145,8 @@ Change the type from ClusterIP to LoadBalancer:
 spec:
   type: LoadBalancer
 ```
-- Now Prometheus is exposed through a LoadBalancer service. To access it, navigate to the provided LoadBalancer IP address 
+- Now Prometheus is exposed through a LoadBalancer service. To access it, navigate to the provided LoadBalancer IP address
+  ![Prometheus Dashboard](docs/prometheus-dashboard.PNG)
 
 ### Access Grafana:
 ```bash
