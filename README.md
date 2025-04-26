@@ -133,7 +133,7 @@ To monitor the performance and health of your application, we use **Prometheus**
 ### Grafana Dashboard Example:
 Once the application is deployed, you can access the Grafana dashboard to monitor various metrics such as CPU usage, memory usage, and pod status. Here’s an example of what the Grafana dashboard may look like:
 
-![Grafana Dashboard](/docs/cluster-dashboard.PNG)
+![Grafana Dashboard](docs/cluster-dashboard.PNG)
 
 This dashboard is set up to display the following metrics:
 - **CPU Usage**: Displays real-time CPU consumption of the application pods.
