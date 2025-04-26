@@ -176,7 +176,7 @@ Once the pipeline is completed, your application will be deployed to the Kuberne
 
 **To access the application:**
 - Open your browser and go to `http://<LoadBalancer-IP>`.
-- The application should display a simple landing page or API response.
+- The application should display a simple counter App
 
 ![Application Output](/docs/application-output.PNG)
   
