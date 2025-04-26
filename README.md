@@ -130,6 +130,22 @@ Once you’ve SSH'd into the EC2 instance and ensured Jenkins is installed, foll
 
 To monitor the performance and health of your application, we use **Prometheus** for metrics collection and **Grafana** for visualization.
 
+You can install Prometheus and Grafana Using Helm 
+```bash
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+helm install prometheus prometheus-community/kube-prometheus-stack --namespace monitoring --create-namespace
+```
+### Access Prometheus via LoadBalancer:
+```bash
+kubectl edit svc prometheus-kube-prometheus-prometheus -n monitoring
+```
+Change the type from ClusterIP to LoadBalancer:
+```yml
+spec:
+  type: LoadBalancer
+```
+- Now Prometheus is exposed through a LoadBalancer service. To access it, navigate to the provided LoadBalancer IP address 
 ### Grafana Dashboard Example:
 Once the application is deployed, you can access the Grafana dashboard to monitor various metrics such as CPU usage, memory usage, and pod status. Here’s an example of what the Grafana dashboard may look like:
 
@@ -142,7 +158,15 @@ This dashboard is set up to display the following metrics:
 - **Request Rates**: A graph of incoming requests and response times for the application.
 
 ### Access Grafana:
-- Grafana is exposed through a LoadBalancer service. To access it, navigate to the provided LoadBalancer IP address on port `3000` (default port for Grafana).
+```bash
+kubectl edit svc prometheus-grafana  -n monitoring
+```
+Change the type from ClusterIP to LoadBalancer:
+```yml
+spec:
+  type: LoadBalancer
+```
+- Now Grafana is exposed through a LoadBalancer service. To access it, navigate to the provided LoadBalancer IP address 
 - The default credentials are:
    - **Username**: `admin`
    - **Password**: `prom-operator` (Change this immediately after logging in)
