@@ -146,16 +146,6 @@ spec:
   type: LoadBalancer
 ```
 - Now Prometheus is exposed through a LoadBalancer service. To access it, navigate to the provided LoadBalancer IP address 
-### Grafana Dashboard Example:
-Once the application is deployed, you can access the Grafana dashboard to monitor various metrics such as CPU usage, memory usage, and pod status. Here’s an example of what the Grafana dashboard may look like:
-
-![Grafana Dashboard](docs/cluster-dashboard.PNG)
-
-This dashboard is set up to display the following metrics:
-- **CPU Usage**: Displays real-time CPU consumption of the application pods.
-- **Memory Usage**: Shows the memory usage of the application and Kubernetes cluster.
-- **Pod Status**: A table displaying the health of deployed pods.
-- **Request Rates**: A graph of incoming requests and response times for the application.
 
 ### Access Grafana:
 ```bash
@@ -170,6 +160,16 @@ spec:
 - The default credentials are:
    - **Username**: `admin`
    - **Password**: `prom-operator` (Change this immediately after logging in)
+### Grafana Dashboard Example:
+Once the application is deployed, you can access the Grafana dashboard to monitor various metrics such as CPU usage, memory usage, and pod status. Here’s an example of what the Grafana dashboard may look like:
+
+![Grafana Dashboard](docs/cluster-dashboard.PNG)
+
+This dashboard is set up to display the following metrics:
+- **CPU Usage**: Displays real-time CPU consumption of the application pods.
+- **Memory Usage**: Shows the memory usage of the application and Kubernetes cluster.
+- **Pod Status**: A table displaying the health of deployed pods.
+- **Request Rates**: A graph of incoming requests and response times for the application.
 ## Step 8: Access Your Application
 
 Once the pipeline is completed, your application will be deployed to the Kubernetes cluster. You can access it through the LoadBalancer service by navigating to the provided public IP or domain.
