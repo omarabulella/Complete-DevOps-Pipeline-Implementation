@@ -16,6 +16,7 @@ spec:
       containers:
       - name: counter-app
         image:  IMAGE_PLACEHOLDER
+        imagePullPolicy: Always
         ports:
         - containerPort: 8000
         envFrom:
